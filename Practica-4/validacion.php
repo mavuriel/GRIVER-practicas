@@ -1,5 +1,16 @@
 <?php
 
+/**
+ * Valida los datos.
+ *
+ * Este metodo valida los datos provenientes de una solicitud
+ * POST, evalua campos vacios y formato de una cadena, devuelve 
+ * un arreglo con todos los errores.
+ *
+ * @access public
+ * @param array $datos
+ * @return array
+ */
 function ValidaDatos($datos)
 {
     $aMensajes = [];
