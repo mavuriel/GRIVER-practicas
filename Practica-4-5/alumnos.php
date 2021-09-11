@@ -26,7 +26,6 @@ class Alumno extends Conexion
             ->prepare("INSERT INTO alumnos (sNombre,sApellido) VALUES (?,?)");
         $consulta->bind_param("ss", $sNombreBind, $sApellidoBind);
 
-
         $sNombreBind = $sNombreInsertar;
         $sApellidoBind = $sApellidoInsertar;
 
@@ -79,7 +78,6 @@ class Alumno extends Conexion
         $consulta = $db
             ->prepare("UPDATE alumnos SET sNombre = ?, sApellido=? WHERE nIdAlumno = ?");
         $consulta->bind_param("ssi", $sNombreSet, $sApellidoSet, $nIdCondicion);
-
 
         $sNombreSet = $sNombreActualizar;
         $sApellidoSet = $sApellidoActualizar;

@@ -149,6 +149,7 @@ if (count($aErrores) > 0) {
     </table>
 </div>
 
+<a href="ajax_alumno.php">Ir a peticion AJAX</a>
 </div>
 </main>
 <script>
