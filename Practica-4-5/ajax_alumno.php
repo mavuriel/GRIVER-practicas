@@ -6,7 +6,6 @@ if (isset($_GET['accion'])) {
 
     switch ($sAccion) {
         case 'buscar':
-            require_once 'conexion.php';
             require_once 'alumnos.php';
             $oAlumno = new Alumno;
             $aDatosAlumno = $oAlumno->UnRegistro($nIdAlumnoAjax);
@@ -47,7 +46,7 @@ $aListaAlumnos = $oAlumno->TodosRegistros();
       </div>
       <div class="card-body">
         <div class="form-group">
-          <form method="post">
+          <form method="POST">
             <label for="idalumno" class="form-label mt-1">Alumnos</label>
             <select class="form-select" id="idalumno" name="idalumno" >
               <?php foreach ($aListaAlumnos as $alumno): ?>

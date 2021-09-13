@@ -1,5 +1,5 @@
 <?php
-
+require_once 'conexion.php';
 /**
  * Esta clase manipula la informacion del alumno.
  *
@@ -50,7 +50,7 @@ class Alumno extends Conexion
         $oConexion = new Conexion;
         $db = $oConexion->Conectar();
         $consulta = $db
-            ->prepare("DELETE FROM alumnos WHERE nIdAlumnos = ?");
+            ->prepare("DELETE FROM alumnos WHERE nIdAlumno = ?");
         $consulta->bind_param("i", $nIdCondicion);
         $nIdCondicion = $nIdSeleccionado;
         $consulta->execute();

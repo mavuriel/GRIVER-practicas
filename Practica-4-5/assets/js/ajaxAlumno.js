@@ -30,3 +30,7 @@ $(function(){
 /* $.each(pJson,function(llave, valor){
 console.log(llave+'-'+valor)
 }) */
+/* 
+<button id="enviar" type="button" class="btn btn-success me-2
+            <?php if (isset($aDatosSeleccionado)) {echo 'disabled';} ?>" name="accion" value="enviar">Enviar</button>
+            */
