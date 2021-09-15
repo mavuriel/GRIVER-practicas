@@ -1,9 +1,9 @@
 <?php
 if (isset($_GET['accion'])) {
     $sAccion = $_GET['accion'];
+    $nId = isset($_POST['id']) ? $_POST['id'] : '';
     $sNombre = isset($_POST['nombre']) ? $_POST['nombre'] : '';
     $sApellido = isset($_POST['apellido']) ? $_POST['apellido'] : '';
-    $nId = isset($_POST['id']) ? $_POST['id'] : '';
 
     switch ($sAccion) {
         case 'todo':
@@ -40,6 +40,14 @@ if (isset($_GET['accion'])) {
             $oAlumno = new Alumno;
             $aDatosAlumno = $oAlumno->UnRegistro($nId);
             echo json_encode($aDatosAlumno);
+            break;
+
+        case 'actualizar':
+            require_once 'alumnos.php';
+            $oAlumno = new Alumno;
+            $sActualizar = $oAlumno->Actualizar($sNombre, $sApellido, $nId);
+            $msnActualizar = ['mensaje' => $sActualizar];
+            echo json_encode($msnActualizar);
             break;
 
         default:

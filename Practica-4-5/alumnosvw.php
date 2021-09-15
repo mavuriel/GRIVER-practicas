@@ -1,6 +1,6 @@
 <?php
 
-require_once 'conexion.php';
+/* require_once 'conexion.php';
 require_once 'alumnos.php';
 
 $oAlumno = new Alumno;
@@ -8,7 +8,7 @@ $oAlumno = new Alumno;
 $sNombreNuevo = (isset($_POST['nombre'])) ? $_POST['nombre'] : '';
 $sApellidoNuevo = (isset($_POST['apellido'])) ? $_POST['apellido'] : '';
 $nId = (isset($_POST['idalumno'])) ? $_POST['idalumno'] : '';
-$aErrores = [];
+$aErrores = []; */
 
 /* switch ($sAccion) {
 case 'enviar':
@@ -51,7 +51,7 @@ default:
 break;
 } */
 
-$aListaAlumnos = $oAlumno->TodosRegistros();
+//$aListaAlumnos = $oAlumno->TodosRegistros();
 ?>
 
 <?php include './layout/inicio.php';?>
@@ -118,7 +118,7 @@ echo '</div>';
         <div class="card-footer text-muted d-flex justify-content-center">
 
             <input class="btn btn-success me-2" type="button" id="enviar" value="Enviar">
-            <button type="submit" class="btn btn-warning" name="accion" value="actualizar">Actualizar</button>
+            <button id="actualizar" type="button" class="btn btn-warning" >Actualizar</button>
             </form>
         </div>
     </div>
@@ -140,15 +140,42 @@ echo '</div>';
 <a href="ajax_alumno.php">Ir a peticion AJAX</a>
 </div>
 </main>
-<script src="./assets/js/jquery-3.6.0.min.js"></script>
+<!--
+<script src="./assets/js/funciones.js"></script> -->
 <script src="./assets/js/validacion.js"></script>
-<script src="./assets/js/funciones.js"></script>
+<script src="./assets/js/jquery-3.6.0.min.js"></script>
+
 <script>
 
-  $(document).ready(function(){
+    $(function(){
 
-        //Mostrar todos los datos de la tabla
-        todosDatos()
+        const todosDatos = () => {
+            $.ajax({
+                type: 'post',
+                url: 'alumnoajax.php?accion=todo',
+             }).done(function(respuesta){
+                console.log(respuesta)
+                let pJson = JSON.parse(respuesta)
+                console.log(pJson)
+                $('#registros').empty()
+                pJson.forEach(e => {
+                    $('#registros').append(
+                        '<tr class="table-light">'+
+                        '<td>'+e[0]+'</td>'+
+                        '<td>'+e[1]+'</td>'+
+                        '<td>'+e[2]+'</td>'+
+                        '<td id="btnacciones" class="d-flex justify-content-around me-1">'+
+                        '<button class="eliminar btn btn-danger" type="button" value="'+ e[0] +'">Eliminar</button>'+
+                        '<button class="seleccionar btn btn-info" type="button" value="'+ e[0] +'">Seleccionar</button>'+
+                        '</td>'+
+                        '</tr>')
+                    });
+            })
+
+        }
+        /* Mostrar datos de la tabla*/
+        (todosDatos)()
+
 
         /* Errores nombre */
         const vacioNombre = document.querySelector('.cvacion')
@@ -170,6 +197,7 @@ echo '</div>';
             let inputev = $('.validarnombre').val()
             ValidarTexto(inputev,vacioNombre,formatInv,btnenviar)
         })
+
         //Apellido
         $('.errorapellido').hide()
         $('.validarapellido').keyup(function(){
@@ -178,27 +206,147 @@ echo '</div>';
             ValidarTexto(inputev,vacioApellido,formatInvA,btnenviar)
         })
 
-        /* Eventos botones CRUD*/
+        /* Agregar listener al boton eliminar y seleccionar */
+        const listerners = ()=>{
+            let btns = document.querySelectorAll('.eliminar')
+                for (let btn of btns){
+                            btn.addEventListener('click',()=>{
+                                eliminar(btn.value)
+                            })
+                }
 
-        //Insertar
-        $('#enviar').click(function(){
-          insertar()
+                let btns2 = document.querySelectorAll('.seleccionar')
+                for (let btn of btns2){
+                    btn.addEventListener('click',()=>{
+                        seleccionar(btn.value)
+                    })
+                }
+        }
+        //Timeout para asignar los listeners
+        const asignarListeners = () => {
+            let checarEliminar = setTimeout(()=>{
+            if(document.readyState === 'complete'){
+
+                listerners()
+
+            }
+            },100)
+        }
+
+        (asignarListeners)()
+
+        /* Insertar datos */
+
+        //const btnenviar = document.querySelector('#enviar')
+        btnenviar.addEventListener('click',()=>{
+            insertar()
         })
-        //Eliminar
-        $('#registros').on('click','#eliminar',function(){
-          eliminar()
+
+        const insertar = () => {
+
+            let nombre = $('#nombreinput').val()
+            let apellido = $('#apellidoinput').val()
+
+            $.ajax({
+                type: 'post',
+                url: 'alumnoajax.php?accion=insertar',
+                data:{nombre:nombre,apellido:apellido},
+            }).done(function(respuesta){
+                console.log(respuesta)
+                let pJson = JSON.parse(respuesta)
+                console.log(pJson)
+                $('#msndatos').empty()
+                $('#nombreinput').val('')
+                $('#apellidoinput').val('')
+                $('#msndatos').append(
+                '<div id="contenedormsn" class="alert alert-success d-flex justify-content-center align-items-center w-75 mb-0">'+
+                '<p class="mb-0"> <strong>'+ pJson['mensaje'] +'</strong></p>'+
+                '</div>'
+                )
+            })
+            todosDatos()
+            asignarListeners()
+        }
+
+        /* Funcion eliminar dato */
+        const eliminar = (n) =>{
+            let id = parseInt(n)
+            $.ajax({
+                type: 'post',
+                url: 'alumnoajax.php?accion=eliminar',
+                data:{id:id},
+            }).done(function(respuesta){
+                console.log(respuesta)
+                let pJson = JSON.parse(respuesta)
+                console.log(pJson)
+                $('#msndatos').empty()
+                $('#msndatos').append(
+                '<div id="contenedormsn" class="alert alert-success d-flex justify-content-center align-items-center w-75 mb-0">'+
+                '<p class="mb-0"> <strong>'+ pJson['mensaje'] +'</strong></p>'+
+                '</div>'
+                )
+            })
+            todosDatos()
+            asignarListeners()
+        }
+
+        const seleccionar = (n) =>{
+            let id = parseInt(n)
+            $.ajax({
+                type: 'post',
+                url: 'alumnoajax.php?accion=seleccionar',
+                data:{id:id},
+            }).done(function(respuesta){
+                console.log(respuesta)
+                let pJson = JSON.parse(respuesta)
+                console.log(pJson)
+                btnenviar.classList.add('disabled')
+                $('#idinput').val(pJson[0])
+                $('#nombreinput').val(pJson[1])
+                $('#apellidoinput').val(pJson[2])
+            })
+            todosDatos()
+            asignarListeners()
+        }
+
+        //Listener boton actualizar
+        const btnactualizar = document.querySelector('#actualizar')
+
+        btnactualizar.addEventListener('click',()=>{
+            actualizar()
         })
-        //Seleccionar
 
-        $('#registros').on('click','#seleccionar',function(){
-            let id = $('#idseleccionado').val()
-            console.log(id)
-        })
-        //Actualizar
+        //Funcion actualizar
+        const actualizar = () => {
+            let id = $('#idinput').val()
+            let nombre = $('#nombreinput').val()
+            let apellido = $('#apellidoinput').val()
 
-    })
+            $.ajax({
+            type: 'post',
+            url: 'alumnoajax.php?accion=actualizar',
+            data:{id:id,nombre:nombre,apellido:apellido},
+            }).done(function(respuesta){
+            console.log(respuesta)
+            let pJson = JSON.parse(respuesta)
+            console.log(pJson)
+            $('#msndatos').empty()
 
+            $('#idinput').val('')
+            $('#nombreinput').val('')
+            $('#apellidoinput').val('')
 
+            $('#msndatos').append(
+            '<div id="contenedormsn" class="alert alert-success d-flex justify-content-center align-items-center w-75 mb-0">'+
+            '<p class="mb-0"> <strong>'+ pJson['mensaje'] +'</strong></p>'+
+            '</div>'
+            )
+            })
+            todosDatos()
+            asignarListeners()
+        }
+
+    })//document.ready
 </script>
 </body>
 

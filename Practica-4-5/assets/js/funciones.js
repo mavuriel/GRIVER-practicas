@@ -1,31 +1,4 @@
-/* Mostrar datos */
 
-const todosDatos = () => {
-  $.ajax({
-    type: 'post',
-    url: 'alumnoajax.php?accion=todo',
-    }).done(function(respuesta){
-    console.log(respuesta)
-    let pJson = JSON.parse(respuesta)
-    console.log(pJson)
-    $('#registros').empty()
-    pJson.forEach(e => {
-      ($('#registros').append(
-      '<tr class="table-light">'+
-      '<td>'+e[0]+'</td>'+
-      '<td>'+e[1]+'</td>'+
-      '<td>'+e[2]+'</td>'+
-      '<td id="btnacciones" class="d-flex justify-content-around me-1">'+
-      '<form method="POST">'+
-      '<input id="idseleccionado" type="text" name="idseleccionado" value="'+ e[0] +'">'+
-      '<input id="eliminar" class="btn btn-danger" type="button" value="Eliminar"  >'+
-      '<input id="seleccionar" class="btn btn-info" type="button" value="Seleccionar"'+
-      '</form> </td>'+
-      '</tr>')).innerHTML
-    });
-  })
-
-}
 /* Insertar datos */
 
 const insertar = () => {
@@ -47,14 +20,13 @@ const insertar = () => {
     '<p class="mb-0"> <strong>'+ pJson['mensaje'] +'</strong></p>'+
     '</div>'
     )
+    todosDatos()
   })
-
-  todosDatos()
 }
 
 /* Eliminar dato */
 
-function eliminar() {
+/* function eliminar() {
 
   let id = ($('#idseleccionado').val()).trim()
 
@@ -74,7 +46,7 @@ function eliminar() {
     )
   })
   todosDatos()
-}
+} */
 
 /* Obtener un dato */
 const seleccionar = () => {
