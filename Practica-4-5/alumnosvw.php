@@ -1,59 +1,3 @@
-<?php
-
-/* require_once 'conexion.php';
-require_once 'alumnos.php';
-
-$oAlumno = new Alumno;
-
-$sNombreNuevo = (isset($_POST['nombre'])) ? $_POST['nombre'] : '';
-$sApellidoNuevo = (isset($_POST['apellido'])) ? $_POST['apellido'] : '';
-$nId = (isset($_POST['idalumno'])) ? $_POST['idalumno'] : '';
-$aErrores = []; */
-
-/* switch ($sAccion) {
-case 'enviar':
-
-require_once 'validacion.php';
-$aDatosPost = $_POST;
-$aMensajesError = ValidaDatos($aDatosPost);
-foreach ($aMensajesError as $error) {
-$aErrores[] = $error;
-}
-if (empty($aErrores)) {
-$sInsertarMsg = $oAlumno->Insertar($sNombreNuevo, $sApellidoNuevo);
-}
-break;
-
-case 'seleccionar':
-$aDatosSeleccionado = $oAlumno->UnRegistro($nId);
-break;
-
-case 'actualizar':
-require_once 'validacion.php';
-$aDatosPost = $_POST;
-$aMensajesError = ValidaDatos($aDatosPost);
-foreach ($aMensajesError as $error) {
-$aErrores[] = $error;
-}
-if (empty($aErrores)) {
-$nIdCondicion = (isset($_POST['id'])) ? $_POST['id'] : '';
-$actualizar = $oAlumno
-->Actualizar($sNombreNuevo, $sApellidoNuevo, $nIdCondicion);
-}
-break;
-
-case 'eliminar':
-$sEliminar = $oAlumno->Eliminar($nId);
-break;
-
-default:
-# code...
-break;
-} */
-
-//$aListaAlumnos = $oAlumno->TodosRegistros();
-?>
-
 <?php include './layout/inicio.php';?>
 <!-- Formulario -->
 <div class="col">
@@ -61,6 +5,10 @@ break;
         <h3 class="card-header text-center">Formulario alumnos</h3>
         <!-- Alerta de errores -->
         <div id="msndatos" class="card-body d-flex align-items-center justify-content-center pb-0">
+
+        <!-- TODO: falta incorporar las validaciones del servidor
+    o con JS no permitir enviar campos vacios -->
+
 <?php
 /* if (count($aErrores) > 0) {
 echo '';
@@ -118,8 +66,9 @@ echo '</div>';
         <div class="card-footer text-muted d-flex justify-content-center">
 
             <input class="btn btn-success me-2" type="button" id="enviar" value="Enviar">
-            <button id="actualizar" type="button" class="btn btn-warning" >Actualizar</button>
-            </form>
+            <button id="actualizar" type="button" class="btn btn-warning me-2 disabled" >Actualizar</button>
+        </form>
+        <a id="cancelar" href="alumnosvw.php" class="btn btn-secondary me-2 disabled">Cancelar</a>
         </div>
     </div>
 </div>
@@ -140,12 +89,13 @@ echo '</div>';
 <a href="ajax_alumno.php">Ir a peticion AJAX</a>
 </div>
 </main>
-<!--
-<script src="./assets/js/funciones.js"></script> -->
+
 <script src="./assets/js/validacion.js"></script>
 <script src="./assets/js/jquery-3.6.0.min.js"></script>
 
 <script>
+
+/* TODO: separarlo de este archivo */
 
     $(function(){
 
@@ -154,9 +104,7 @@ echo '</div>';
                 type: 'post',
                 url: 'alumnoajax.php?accion=todo',
              }).done(function(respuesta){
-                console.log(respuesta)
                 let pJson = JSON.parse(respuesta)
-                console.log(pJson)
                 $('#registros').empty()
                 pJson.forEach(e => {
                     $('#registros').append(
@@ -187,7 +135,8 @@ echo '</div>';
 
         /* Botones */
         const btnenviar = document.querySelector('#enviar')
-        const btneliminar = document.querySelectorAll('#eliminar')
+        const btnactualizar = document.querySelector('#actualizar')
+        const btncancelar = document.querySelector('#cancelar')
 
         /* Validaciones */
         //Nombre
@@ -206,38 +155,23 @@ echo '</div>';
             ValidarTexto(inputev,vacioApellido,formatInvA,btnenviar)
         })
 
-        /* Agregar listener al boton eliminar y seleccionar */
-        const listerners = ()=>{
-            let btns = document.querySelectorAll('.eliminar')
-                for (let btn of btns){
-                            btn.addEventListener('click',()=>{
-                                eliminar(btn.value)
-                            })
+        /* Delegacion de eventos - botones de accion */
+        const registros = document.querySelector('#registros')
+
+        registros.addEventListener('click', (e) => {
+            if(e.target && e.target.tagName === 'BUTTON'){
+                if(e.target.classList[0]==='eliminar'){
+                    let id = parseInt(e.target.value)
+                    eliminar(id)
+                }else{
+                    let id = parseInt(e.target.value)
+                    seleccionar(id)
                 }
-
-                let btns2 = document.querySelectorAll('.seleccionar')
-                for (let btn of btns2){
-                    btn.addEventListener('click',()=>{
-                        seleccionar(btn.value)
-                    })
-                }
-        }
-        //Timeout para asignar los listeners
-        const asignarListeners = () => {
-            let checarEliminar = setTimeout(()=>{
-            if(document.readyState === 'complete'){
-
-                listerners()
-
             }
-            },100)
-        }
-
-        (asignarListeners)()
+        })
 
         /* Insertar datos */
 
-        //const btnenviar = document.querySelector('#enviar')
         btnenviar.addEventListener('click',()=>{
             insertar()
         })
@@ -252,9 +186,7 @@ echo '</div>';
                 url: 'alumnoajax.php?accion=insertar',
                 data:{nombre:nombre,apellido:apellido},
             }).done(function(respuesta){
-                console.log(respuesta)
                 let pJson = JSON.parse(respuesta)
-                console.log(pJson)
                 $('#msndatos').empty()
                 $('#nombreinput').val('')
                 $('#apellidoinput').val('')
@@ -265,7 +197,6 @@ echo '</div>';
                 )
             })
             todosDatos()
-            asignarListeners()
         }
 
         /* Funcion eliminar dato */
@@ -276,9 +207,7 @@ echo '</div>';
                 url: 'alumnoajax.php?accion=eliminar',
                 data:{id:id},
             }).done(function(respuesta){
-                console.log(respuesta)
                 let pJson = JSON.parse(respuesta)
-                console.log(pJson)
                 $('#msndatos').empty()
                 $('#msndatos').append(
                 '<div id="contenedormsn" class="alert alert-success d-flex justify-content-center align-items-center w-75 mb-0">'+
@@ -287,7 +216,6 @@ echo '</div>';
                 )
             })
             todosDatos()
-            asignarListeners()
         }
 
         const seleccionar = (n) =>{
@@ -297,21 +225,18 @@ echo '</div>';
                 url: 'alumnoajax.php?accion=seleccionar',
                 data:{id:id},
             }).done(function(respuesta){
-                console.log(respuesta)
                 let pJson = JSON.parse(respuesta)
-                console.log(pJson)
                 btnenviar.classList.add('disabled')
                 $('#idinput').val(pJson[0])
                 $('#nombreinput').val(pJson[1])
                 $('#apellidoinput').val(pJson[2])
             })
             todosDatos()
-            asignarListeners()
+            btnactualizar.classList.remove('disabled')
+            btncancelar.classList.remove('disabled')
         }
 
         //Listener boton actualizar
-        const btnactualizar = document.querySelector('#actualizar')
-
         btnactualizar.addEventListener('click',()=>{
             actualizar()
         })
@@ -327,9 +252,7 @@ echo '</div>';
             url: 'alumnoajax.php?accion=actualizar',
             data:{id:id,nombre:nombre,apellido:apellido},
             }).done(function(respuesta){
-            console.log(respuesta)
             let pJson = JSON.parse(respuesta)
-            console.log(pJson)
             $('#msndatos').empty()
 
             $('#idinput').val('')
@@ -343,7 +266,6 @@ echo '</div>';
             )
             })
             todosDatos()
-            asignarListeners()
         }
 
     })//document.ready
