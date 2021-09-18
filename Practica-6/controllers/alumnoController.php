@@ -8,7 +8,7 @@ if (isset($_GET['accion'])) {
     switch ($sAccion) {
         case 'todo':
 
-            require_once '../models/alumnosModel.php';
+            require_once '../models/alumnoModel.php';
             $oAlumno = new Alumno;
             $aAlumnos = $oAlumno->TodosRegistros();
             echo json_encode($aAlumnos);
@@ -17,7 +17,7 @@ if (isset($_GET['accion'])) {
 
         case 'insertar':
 
-            require_once '../models/alumnosModel.php';
+            require_once '../models/alumnoModel.php';
             $oAlumno = new Alumno;
             $sInsertar = $oAlumno->Insertar($sNombre, $sApellido);
             $msnInsertar = ['mensaje' => $sInsertar];
@@ -27,7 +27,7 @@ if (isset($_GET['accion'])) {
 
         case 'eliminar':
 
-            require_once '../models/alumnosModel.php';
+            require_once '../models/alumnoModel.php';
             $oAlumno = new Alumno;
             $sEliminar = $oAlumno->Eliminar($nId);
             $msnEliminar = ['mensaje' => $sEliminar];
@@ -36,14 +36,14 @@ if (isset($_GET['accion'])) {
             break;
 
         case 'seleccionar':
-            require_once '../models/alumnosModel.php';
+            require_once '../models/alumnoModel.php';
             $oAlumno = new Alumno;
             $aDatosAlumno = $oAlumno->UnRegistro($nId);
             echo json_encode($aDatosAlumno);
             break;
 
         case 'actualizar':
-            require_once '../models/alumnosModel.php';
+            require_once '../models/alumnoModel.php';
             $oAlumno = new Alumno;
             $sActualizar = $oAlumno->Actualizar($sNombre, $sApellido, $nId);
             $msnActualizar = ['mensaje' => $sActualizar];
