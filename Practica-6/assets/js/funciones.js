@@ -3,7 +3,8 @@ $(function(){
   const todosDatos = () => {
       $.ajax({
           type: 'post',
-          url: '/controllers/alumnoController.php?accion=todo',
+          url: '/controllers/alumnoController.php',
+          data: {accion:'todo'}
        }).done(function(respuesta){
           let pJson = JSON.parse(respuesta)
           $('#registros').empty()
@@ -20,11 +21,18 @@ $(function(){
                   '</tr>')
               });
       })
-
   }
   /* Mostrar datos de la tabla*/
   (todosDatos)()
 
+  /* Contenedores */
+  const form = document.querySelector('#formulario')
+  const registros = document.querySelector('#registros')
+
+  /* Botones */
+  const btnenviar = document.querySelector('#enviar')
+  const btnactualizar = document.querySelector('#actualizar')
+  const btncancelar = document.querySelector('#cancelar')
 
   /* Errores nombre */
   const vacioNombre = document.querySelector('.cvacion')
@@ -34,30 +42,38 @@ $(function(){
   const vacioApellido = document.querySelector('.cvacioa')
   const formatInvA = document.querySelector('.cformatoa')
 
-  /* Botones */
-  const btnenviar = document.querySelector('#enviar')
-  const btnactualizar = document.querySelector('#actualizar')
-  const btncancelar = document.querySelector('#cancelar')
-
   /* Validaciones */
-  //Nombre
+  
   $('.errornombre').hide()
-  $('.validarnombre').keyup(function(){
-      $('.errornombre').show()
-      let inputev = $('.validarnombre').val()
-      ValidarTexto(inputev,vacioNombre,formatInv,btnenviar)
-  })
-
-  //Apellido
   $('.errorapellido').hide()
-  $('.validarapellido').keyup(function(){
-      $('.errorapellido').show()
-      let inputev = $('.validarapellido').val()
-      ValidarTexto(inputev,vacioApellido,formatInvA,btnenviar)
-  })
+  btnenviar.classList.add('disabled')
 
-  /* Delegacion de eventos - botones de accion */
-  const registros = document.querySelector('#registros')
+    form.addEventListener('keyup',(e)=>{
+
+        if(e.target && e.target.tagName === 'INPUT'){
+            $('.errornombre').show()
+            let inputev = $('.validarnombre').val()
+            ValidarTexto(inputev,vacioNombre,formatInv,btnenviar)
+
+            $('.errorapellido').show()
+            let inputeva = $('.validarapellido').val()
+            ValidarTexto(inputeva,vacioApellido,formatInvA,btnenviar)
+        }
+
+        let emok = document.querySelectorAll('em.text-success')
+
+        if(btnactualizar.classList.contains('disabled')){
+            if (emok.length === 4){
+                btnenviar.classList.remove('disabled')
+            }else{
+                btnenviar.classList.add('disabled')
+            }
+        }else{
+            btnenviar.classList.add('disabled')            
+        }
+    })
+
+  /* Delegacion de eventos - botones de accion tabla*/  
 
   registros.addEventListener('click', (e) => {
       if(e.target && e.target.tagName === 'BUTTON'){
@@ -84,10 +100,12 @@ $(function(){
 
       $.ajax({
           type: 'post',
-          url: '/controllers/alumnoController.php?accion=insertar',
-          data:{nombre:nombre,apellido:apellido},
+          url: '/controllers/alumnoController.php',
+          data:{accion:'insertar',nombre:nombre,apellido:apellido},
       }).done(function(respuesta){
           let pJson = JSON.parse(respuesta)
+          $('.errornombre').hide()
+          $('.errorapellido').hide()
           $('#msndatos').empty()
           $('#nombreinput').val('')
           $('#apellidoinput').val('')
@@ -105,8 +123,8 @@ $(function(){
       let id = parseInt(n)
       $.ajax({
           type: 'post',
-          url: '/controllers/alumnoController.php?accion=eliminar',
-          data:{id:id},
+          url: '/controllers/alumnoController.php',
+          data:{accion:'eliminar',id:id},
       }).done(function(respuesta){
           let pJson = JSON.parse(respuesta)
           $('#msndatos').empty()
@@ -123,8 +141,8 @@ $(function(){
       let id = parseInt(n)
       $.ajax({
           type: 'post',
-          url: '/controllers/alumnoController.php?accion=seleccionar',
-          data:{id:id},
+          url: '/controllers/alumnoController.php',
+          data:{accion:'seleccionar',id:id},
       }).done(function(respuesta){
           let pJson = JSON.parse(respuesta)
           btnenviar.classList.add('disabled')
@@ -133,6 +151,7 @@ $(function(){
           $('#apellidoinput').val(pJson[2])
       })
       todosDatos()
+      btnenviar.classList.add('disabled')
       btnactualizar.classList.remove('disabled')
       btncancelar.classList.remove('disabled')
   }
@@ -149,22 +168,24 @@ $(function(){
       let apellido = $('#apellidoinput').val()
 
       $.ajax({
-      type: 'post',
-      url: '/controllers/alumnoController.php?accion=actualizar',
-      data:{id:id,nombre:nombre,apellido:apellido},
+        type: 'post',
+        url: '/controllers/alumnoController.php',
+        data:{accion:'actualizar',id:id,nombre:nombre,apellido:apellido},
       }).done(function(respuesta){
-      let pJson = JSON.parse(respuesta)
-      $('#msndatos').empty()
+        let pJson = JSON.parse(respuesta)
+        $('#msndatos').empty()
 
-      $('#idinput').val('')
-      $('#nombreinput').val('')
-      $('#apellidoinput').val('')
+        $('#idinput').val('')
+        $('#nombreinput').val('')
+        $('#apellidoinput').val('')
+        $('.errornombre').hide()
+        $('.errorapellido').hide()
 
-      $('#msndatos').append(
-      '<div id="contenedormsn" class="alert alert-success d-flex justify-content-center align-items-center w-75 mb-0">'+
-      '<p class="mb-0"> <strong>'+ pJson['mensaje'] +'</strong></p>'+
-      '</div>'
-      )
+        $('#msndatos').append(
+        '<div id="contenedormsn" class="alert alert-success d-flex justify-content-center align-items-center w-75 mb-0">'+
+        '<p class="mb-0"> <strong>'+ pJson['mensaje'] +'</strong></p>'+
+        '</div>'
+        )
       })
       todosDatos()
   }
