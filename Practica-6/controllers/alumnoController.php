@@ -10,9 +10,9 @@ if (isset($_POST['accion'])) {
     switch ($sAccion) {
         case 'todo':
 
-            $oAlumno = new Alumno;
-            $aAlumnos = $oAlumno->TodosRegistros();
-            echo json_encode($aAlumnos);
+            $oAlumnoController = new AlumnoController;
+            $aAlumnos = $oAlumnoController->TodosRegistros();
+            echo $aAlumnos;
 
             break;
 
@@ -105,5 +105,13 @@ class AlumnoController
         $oAlumno = new Alumno;
         $aDatosAlumno = $oAlumno->UnRegistro($nId);
         return json_encode($aDatosAlumno);
+    }
+
+    public function TodosRegistros()
+    {
+        $oAlumno = new Alumno;
+        $aAlumnos = $oAlumno->TodosRegistros();
+
+        return json_encode($aAlumnos);
     }
 }
