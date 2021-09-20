@@ -1,3 +1,6 @@
+/*
+TODO: crear stored procedures 
+*/
 $(function(){
 
   const todosDatos = () => {
@@ -104,16 +107,16 @@ $(function(){
           data:{accion:'insertar',nombre:nombre,apellido:apellido},
       }).done(function(respuesta){
           let pJson = JSON.parse(respuesta)
-          $('.errornombre').hide()
-          $('.errorapellido').hide()
-          $('#msndatos').empty()
-          $('#nombreinput').val('')
-          $('#apellidoinput').val('')
+
+					limpiarCampos()
+
           $('#msndatos').append(
           '<div id="contenedormsn" class="alert alert-success d-flex justify-content-center align-items-center w-75 mb-0">'+
           '<p class="mb-0"> <strong>'+ pJson['mensaje'] +'</strong></p>'+
           '</div>'
           )
+
+					btnenviar.classList.add('disabled')
       })
       todosDatos()
   }
@@ -127,7 +130,9 @@ $(function(){
           data:{accion:'eliminar',id:id},
       }).done(function(respuesta){
           let pJson = JSON.parse(respuesta)
-          $('#msndatos').empty()
+
+					limpiarCampos()
+
           $('#msndatos').append(
           '<div id="contenedormsn" class="alert alert-success d-flex justify-content-center align-items-center w-75 mb-0">'+
           '<p class="mb-0"> <strong>'+ pJson['mensaje'] +'</strong></p>'+
@@ -173,21 +178,28 @@ $(function(){
         data:{accion:'actualizar',id:id,nombre:nombre,apellido:apellido},
       }).done(function(respuesta){
         let pJson = JSON.parse(respuesta)
-        $('#msndatos').empty()
-
-        $('#idinput').val('')
-        $('#nombreinput').val('')
-        $('#apellidoinput').val('')
-        $('.errornombre').hide()
-        $('.errorapellido').hide()
+        
+        limpiarCampos()
 
         $('#msndatos').append(
         '<div id="contenedormsn" class="alert alert-success d-flex justify-content-center align-items-center w-75 mb-0">'+
         '<p class="mb-0"> <strong>'+ pJson['mensaje'] +'</strong></p>'+
         '</div>'
         )
+				btnactualizar.classList.add('disabled')
       })
       todosDatos()
+  }
+
+  const limpiarCampos = () =>{
+
+        $('#idinput').val('')
+        $('#nombreinput').val('')
+        $('#apellidoinput').val('')
+        $('.errornombre').hide()
+        $('.errorapellido').hide()
+        $('#msndatos').empty()
+
   }
 
 })//document.ready

@@ -7,8 +7,6 @@ if (isset($_POST['accion'])) {
     $sNombreP = isset($_POST['nombre']) ? $_POST['nombre'] : '';
     $sApellidoP = isset($_POST['apellido']) ? $_POST['apellido'] : '';
 
-    /* TODO: validar php */
-
     switch ($sAccion) {
         case 'todo':
 
@@ -59,18 +57,39 @@ class AlumnoController
 
     public function Insertar($sNombre, $sApellido)
     {
-        $oAlumno = new Alumno;
-        $sInsertar = $oAlumno->Insertar($sNombre, $sApellido);
-        $msnInsertar = ['mensaje' => $sInsertar];
-        return json_encode($msnInsertar);
+        require_once '../validacion.php';
+        $aValidaciones = ValidaDatos([$sNombre, $sApellido]);
+        $aErrores = [];
+        foreach ($aValidaciones as $error) {
+            $aErrores[] = $error;
+        }
+        if (empty($aErrores)) {
+            $oAlumno = new Alumno;
+            $sInsertar = $oAlumno->Insertar($sNombre, $sApellido);
+            $msnInsertar = ['mensaje' => $sInsertar];
+            return json_encode($msnInsertar);
+        } else {
+            return json_encode($aErrores);
+        }
     }
 
     public function Actualizar($sNombre, $sApellido, $nId)
     {
-        $oAlumno = new Alumno;
-        $sActualizar = $oAlumno->Actualizar($sNombre, $sApellido, $nId);
-        $msnActualizar = ['mensaje' => $sActualizar];
-        return json_encode($msnActualizar);
+        require_once '../validacion.php';
+        $aValidaciones = ValidaDatos([$sNombre, $sApellido]);
+        $aErrores = [];
+        foreach ($aValidaciones as $error) {
+            $aErrores[] = $error;
+        }
+        if (empty($aErrores)) {
+            $oAlumno = new Alumno;
+            $sActualizar = $oAlumno->Actualizar($sNombre, $sApellido, $nId);
+            $msnActualizar = ['mensaje' => $sActualizar];
+            return json_encode($msnActualizar);
+        } else {
+            return json_encode($aErrores);
+        }
+
     }
 
     public function Eliminar($nId)
