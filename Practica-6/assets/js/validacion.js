@@ -1,4 +1,4 @@
-const ValidarTexto = ( texto, campovacio , invformat , btnenviar ) =>{
+const ValidarTexto = ( texto, campovacio , invformat ) =>{
     
   if (texto.length === 0){
     let vacio = '✖ El campo esta vacio.'
@@ -30,13 +30,14 @@ const ValidarTexto = ( texto, campovacio , invformat , btnenviar ) =>{
 
 }
 
-const ValidarNumero = ( numero , campovacio, invformat , btnenviar) => {
+const ValidarNumero = ( numero , campovacio, invformat) => {
   
   
   if (numero.length === 0){
     let vacio = '✖ El campo esta vacio.'
     campovacio.innerText = vacio
     campovacio.classList.add('text-danger')
+    campovacio.classList.remove('text-success')
   }else{
     let novacio = '✔  El campo no esta vacio.'
     campovacio.innerText = novacio
@@ -50,6 +51,7 @@ const ValidarNumero = ( numero , campovacio, invformat , btnenviar) => {
     let notformat = '✖ Formato incorrecto, solo un numero.'
     invformat.innerText = notformat
     invformat.classList.add('text-danger')
+    invformat.classList.remove('text-success')
   }else{
     let okformat = '✔  El formato es correcto.'
     invformat.innerText = okformat

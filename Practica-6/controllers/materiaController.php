@@ -1,58 +1,56 @@
 <?php
-require_once '../models/profesorModel.php';
+require_once '../models/materiaModel.php';
 
 if (isset($_POST['accion'])) {
     $sAccion = $_POST['accion'];
     $nIdP = isset($_POST['id']) ? $_POST['id'] : '';
     $sNombreP = isset($_POST['datouno']) ? $_POST['datouno'] : '';
-    $sApellidoP = isset($_POST['datodos']) ? $_POST['datodos'] : '';
+    $nCredito = isset($_POST['datodos']) ? $_POST['datodos'] : '';
 
     switch ($sAccion) {
         case 'todo':
 
-            $oProfesorController = new ProfesorController;
-            $aProfesor = $oProfesorController->TodosRegistros();
-            echo $aProfesor;
+            $oMateriaController = new MateriaController;
+            $aMaterias = $oMateriaController->TodosRegistros();
+            echo $aMaterias;
 
             break;
 
         case 'insertar':
 
-            $oProfesorController = new ProfesorController;
-            $sMsnInsertar = $oProfesorController->Insertar($sNombreP, $sApellidoP);
+            $oMateriaController = new MateriaController;
+            $sMsnInsertar = $oMateriaController->Insertar($sNombreP, $nCredito);
             echo $sMsnInsertar;
 
             break;
 
         case 'actualizar':
 
-            $oProfesorController = new ProfesorController;
-            $sMsnActualizar = $oProfesorController->Actualizar($sNombreP, $sApellidoP, $nIdP);
+            $oMateriaController = new MateriaController;
+            $sMsnActualizar = $oMateriaController->Actualizar($sNombreP, $nCredito, $nIdP);
             echo $sMsnActualizar;
 
             break;
 
         case 'eliminar':
 
-            $oProfesorController = new ProfesorController;
-            $sMsnEliminar = $oProfesorController->Eliminar($nIdP);
+            $oMateriaController = new MateriaController;
+            $sMsnEliminar = $oMateriaController->Eliminar($nIdP);
             echo $sMsnEliminar;
 
             break;
 
         case 'seleccionar':
-            $oProfesorController = new ProfesorController;
-            $aDatosProfesor = $oProfesorController->Seleccionar($nIdP);
-            echo $aDatosProfesor;
-            break;
-
+            $oMateriaController = new MateriaController;
+            $aDatosMateria = $oMateriaController->Seleccionar($nIdP);
+            echo $aDatosMateria;
         default:
             # code...
             break;
     }
 }
 
-class ProfesorController
+class MateriaController
 {
 
     public function Insertar($sNombre, $sApellido)
@@ -64,8 +62,8 @@ class ProfesorController
             $aErrores[] = $error;
         }
         if (empty($aErrores)) {
-            $oProfesor = new Profesor;
-            $sInsertar = $oProfesor->Insertar($sNombre, $sApellido);
+            $oMateria = new Materia;
+            $sInsertar = $oMateria->Insertar($sNombre, $sApellido);
             $msnInsertar = ['mensaje' => $sInsertar];
             return json_encode($msnInsertar);
         } else {
@@ -82,8 +80,8 @@ class ProfesorController
             $aErrores[] = $error;
         }
         if (empty($aErrores)) {
-            $oProfesor = new Profesor;
-            $sActualizar = $oProfesor->Actualizar($sNombre, $sApellido, $nId);
+            $oMateria = new Materia;
+            $sActualizar = $oMateria->Actualizar($sNombre, $sApellido, $nId);
             $msnActualizar = ['mensaje' => $sActualizar];
             return json_encode($msnActualizar);
         } else {
@@ -94,24 +92,24 @@ class ProfesorController
 
     public function Eliminar($nId)
     {
-        $oProfesor = new Profesor;
-        $sEliminar = $oProfesor->Eliminar($nId);
+        $oMateria = new Materia;
+        $sEliminar = $oMateria->Eliminar($nId);
         $msnEliminar = ['mensaje' => $sEliminar];
         return json_encode($msnEliminar);
     }
 
     public function Seleccionar($nId)
     {
-        $oProfesor = new Profesor;
-        $aDatosProfesor = $oProfesor->UnRegistro($nId);
-        return json_encode($aDatosProfesor);
+        $oMateria = new Materia;
+        $aDatosMateria = $oMateria->UnRegistro($nId);
+        return json_encode($aDatosMateria);
     }
 
     public function TodosRegistros()
     {
-        $oProfesor = new Profesor;
-        $aProfesor = $oProfesor->TodosRegistros();
+        $oMateria = new Materia;
+        $aMaterias = $oMateria->TodosRegistros();
 
-        return json_encode($aProfesor);
+        return json_encode($aMaterias);
     }
 }

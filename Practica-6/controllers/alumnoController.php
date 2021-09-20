@@ -4,8 +4,8 @@ require_once '../models/alumnoModel.php';
 if (isset($_POST['accion'])) {
     $sAccion = $_POST['accion'];
     $nIdP = isset($_POST['id']) ? $_POST['id'] : '';
-    $sNombreP = isset($_POST['nombre']) ? $_POST['nombre'] : '';
-    $sApellidoP = isset($_POST['apellido']) ? $_POST['apellido'] : '';
+    $sNombreP = isset($_POST['datouno']) ? $_POST['datouno'] : '';
+    $sApellidoP = isset($_POST['datodos']) ? $_POST['datodos'] : '';
 
     switch ($sAccion) {
         case 'todo':

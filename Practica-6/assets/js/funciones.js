@@ -1,3 +1,4 @@
+/* TODO: documentar archivo JS */
 const funciones = (controlador) => {
     console.log('El controlador es '+controlador)
 
@@ -44,66 +45,25 @@ const funciones = (controlador) => {
   const vacioApellido = document.querySelector('.cvacioa')
   const formatInvA = document.querySelector('.cformatoa')
 
-  /* Validaciones */
-  
+  /* Errores creditos */
+  const vacioNum = document.querySelector('.cvacionum')
+  const formatInvNum = document.querySelector('.cformatonum')
+
   $('.errornombre').hide()
   $('.errorapellido').hide()
+  $('.errornumero').hide()
   btnenviar.classList.add('disabled')
-
-    form.addEventListener('keyup',(e)=>{
-
-        if(e.target && e.target.tagName === 'INPUT'){
-            $('.errornombre').show()
-            let inputev = $('.validarnombre').val()
-            ValidarTexto(inputev,vacioNombre,formatInv,btnenviar)
-
-            $('.errorapellido').show()
-            let inputeva = $('.validarapellido').val()
-            ValidarTexto(inputeva,vacioApellido,formatInvA,btnenviar)
-        }
-
-        let emok = document.querySelectorAll('em.text-success')
-
-        if(btnactualizar.classList.contains('disabled')){
-            if (emok.length === 4){
-                btnenviar.classList.remove('disabled')
-            }else{
-                btnenviar.classList.add('disabled')
-            }
-        }else{
-            btnenviar.classList.add('disabled')            
-        }
-    })
-
-  /* Delegacion de eventos - botones de accion tabla*/  
-
-  registros.addEventListener('click', (e) => {
-      if(e.target && e.target.tagName === 'BUTTON'){
-          if(e.target.classList[0]==='eliminar'){
-              let id = parseInt(e.target.value)
-              eliminar(id)
-          }else{
-              let id = parseInt(e.target.value)
-              seleccionar(id)
-          }
-      }
-  })
-
-  /* Insertar datos */
-
-  btnenviar.addEventListener('click',()=>{
-      insertar()
-  })
 
   const insertar = () => {
 
-      let nombre = $('#nombreinput').val()
-      let apellido = $('#apellidoinput').val()
+      let primerDato = $('#nombreinput').val()
+      let segundoDato = controlador === 'materia' 
+      ? $('#numeroinput').val() : $('#apellidoinput').val()
 
       $.ajax({
           type: 'post',
           url: '/controllers/'+controlador+'Controller.php',
-          data:{accion:'insertar',nombre:nombre,apellido:apellido},
+          data:{accion:'insertar',datouno:primerDato,datodos:segundoDato},
       }).done(function(respuesta){
           let pJson = JSON.parse(respuesta)
 
@@ -120,7 +80,6 @@ const funciones = (controlador) => {
       todosDatos()
   }
 
-  /* Funcion eliminar dato */
   const eliminar = (n) =>{
       let id = parseInt(n)
       $.ajax({
@@ -137,6 +96,9 @@ const funciones = (controlador) => {
           '<p class="mb-0"> <strong>'+ pJson['mensaje'] +'</strong></p>'+
           '</div>'
           )
+          btnactualizar.classList.add('disabled')
+          btncancelar.classList.add('disabled')
+
       })
       todosDatos()
   }
@@ -148,33 +110,33 @@ const funciones = (controlador) => {
           url: '/controllers/'+controlador+'Controller.php',
           data:{accion:'seleccionar',id:id},
       }).done(function(respuesta){
+          $('#msndatos').empty()
           let pJson = JSON.parse(respuesta)
           btnenviar.classList.add('disabled')
           $('#idinput').val(pJson[0])
           $('#nombreinput').val(pJson[1])
-          $('#apellidoinput').val(pJson[2])
+          if(controlador === 'materia'){
+            $('#numeroinput').val(pJson[2])
+          }else{
+            $('#apellidoinput').val(pJson[2])
+          }
       })
       todosDatos()
       btnenviar.classList.add('disabled')
       btnactualizar.classList.remove('disabled')
       btncancelar.classList.remove('disabled')
   }
-
-  //Listener boton actualizar
-  btnactualizar.addEventListener('click',()=>{
-      actualizar()
-  })
-
-  //Funcion actualizar
+  
   const actualizar = () => {
       let id = $('#idinput').val()
-      let nombre = $('#nombreinput').val()
-      let apellido = $('#apellidoinput').val()
+      let primerDato = $('#nombreinput').val()
+      let segundoDato = controlador === 'materia' 
+      ? $('#numeroinput').val() : $('#apellidoinput').val()
 
       $.ajax({
         type: 'post',
         url: '/controllers/'+controlador+'Controller.php',
-        data:{accion:'actualizar',id:id,nombre:nombre,apellido:apellido},
+        data:{accion:'actualizar',id:id,datouno:primerDato,datodos:segundoDato},
       }).done(function(respuesta){
         let pJson = JSON.parse(respuesta)
         
@@ -195,9 +157,70 @@ const funciones = (controlador) => {
         $('#idinput').val('')
         $('#nombreinput').val('')
         $('#apellidoinput').val('')
+        $('#numeroinput').val('')
         $('.errornombre').hide()
         $('.errorapellido').hide()
+        $('.errornumero').hide()
         $('#msndatos').empty()
 
   }
-}
+
+  /* Listeners */
+  btnactualizar.addEventListener('click',()=>{
+    actualizar()
+  })
+
+  btncancelar.addEventListener('click',()=>{
+      limpiarCampos()
+  })
+
+  btnenviar.addEventListener('click',()=>{
+    insertar()
+  })
+
+  /* Inputs formulario | Validaciones */
+  form.addEventListener('keyup',(e)=>{
+
+    if(e.target && e.target.tagName === 'INPUT'){
+        $('.errornombre').show()
+        let inputev = $('.validarnombre').val()
+        ValidarTexto(inputev,vacioNombre,formatInv,btnenviar)
+
+        if(controlador === 'materia'){
+            $('.errornumero').show()
+            let inputnum = $('.validarnumero').val()
+            ValidarNumero(inputnum,vacioNum,formatInvNum,btnenviar)
+        }else{
+            $('.errorapellido').show()
+            let inputeva = $('.validarapellido').val()
+            ValidarTexto(inputeva,vacioApellido,formatInvA,btnenviar)
+        }
+    }
+
+    let emok = document.querySelectorAll('em.text-success')
+
+    if(btnactualizar.classList.contains('disabled')){
+        if (emok.length === 4){
+            btnenviar.classList.remove('disabled')
+        }else{
+            btnenviar.classList.add('disabled')
+        }
+    }else{
+        btnenviar.classList.add('disabled')            
+    }
+  })
+
+  /* Botones de accion tabla */
+  registros.addEventListener('click', (e) => {
+  if(e.target && e.target.tagName === 'BUTTON'){
+      if(e.target.classList[0]==='eliminar'){
+          let id = parseInt(e.target.value)
+          eliminar(id)
+      }else{
+          let id = parseInt(e.target.value)
+          seleccionar(id)
+      }
+  }
+  })  
+
+}//Funcion principal
