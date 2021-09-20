@@ -1,47 +1,10 @@
-<!DOCTYPE html>
-<html lang="es">
-
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
-  <title>Escuela MVC</title>
-</head>
-
-<body>
-  <header>
-  <nav class="d-flex justify-content-center">
-      <ul class="nav nav-pills">
-      <li class="nav-item">
-          <a class="nav-link active" href="#">Inicio</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="./alumnos.php">Alumnos</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="./profesores.php">Profesores</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link disabled" href="#">Materias</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link disabled" href="#">Clases</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link disabled" href="#">Inscripciones</a>
-        </li>
-      </ul>
-    </nav>
-  </header>
-  <main class="container">
-    <div class="row min-vh-100 align-content-center justify-content-center">
+<?php include 'inicio.php'?>
 
       <!-- Formulario -->
       <div class="col">
           <div class="card mb-3">
               <h3 class="card-header text-center">Formulario alumnos</h3>
-              <!-- Alerta de errores -->
+              <!-- Alerta -->
               <div id="msndatos" class="card-body d-flex align-items-center justify-content-center pb-0">
 
               </div>
@@ -101,7 +64,11 @@
 <script src="../assets/js/jquery-3.6.0.min.js"></script>
 <script src="../assets/js/validacion.js"></script>
 <script src="../assets/js/funciones.js"></script>
-
+<script>
+$(function(){
+    funciones('alumno')
+})//document.ready
+</script>
 </body>
 
 </html>

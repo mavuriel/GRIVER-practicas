@@ -1,18 +1,19 @@
 <?php
-/* TODO: crear stored procedures  */
 require_once '../config/conexion.php';
 /**
- * Esta clase manipula la informacion del alumno.
+ * Esta clase manipula los datos de los profesores.
  *
  * @author Uriel Tenorio <trainee.urielat@griver.com.mx>
  * @copyright 2021 RECO By SOFTDEM. All rights reserved.
  */
-class Alumno extends Conexion
+class Profesor extends Conexion
 {
+
     /**
-     * Inserta los datos del alumnos.
+     * Inserta los datos del profesor.
      *
-     * Este metodo recibe los datos del alumno para su posterior insercion en la    base de datos.
+     * Este metodo obtiene el nombre y apellido del profesor para
+     * insertarlos dentro de la tabla.
      *
      * @access public
      * @param string $sNombreInsertar
@@ -24,7 +25,7 @@ class Alumno extends Conexion
         $oConexion = new Conexion;
         $db = $oConexion->Conectar();
         $consulta = $db
-            ->prepare("INSERT INTO alumnos (sNombre,sApellido) VALUES (?,?)");
+            ->prepare("INSERT INTO profesores (sNombre,sApellido) VALUES (?,?)");
         $consulta->bind_param("ss", $sNombreBind, $sApellidoBind);
 
         $sNombreBind = $sNombreInsertar;
@@ -38,20 +39,21 @@ class Alumno extends Conexion
     }
 
     /**
-     * Elimina los datos de un alumno.
+     * Elimina un profesor.
      *
-     * Este metodo recibe el id del alumno para su posterior busqueda y eliminacion * de datos.
+     * Este metodo elimina todos los datos de un profesor
+     * de acuerdo al id seleccionado.
      *
      * @access public
-     * @param int $nIdSeleccionado
-     * @return string
+     * @param [type] $nIdSeleccionado
+     * @return void
      */
     public function Eliminar($nIdSeleccionado)
     {
         $oConexion = new Conexion;
         $db = $oConexion->Conectar();
         $consulta = $db
-            ->prepare("DELETE FROM alumnos WHERE nIdAlumno = ?");
+            ->prepare("DELETE FROM profesores WHERE nIdProfesor = ?");
         $consulta->bind_param("i", $nIdCondicion);
         $nIdCondicion = $nIdSeleccionado;
         $consulta->execute();
@@ -61,10 +63,12 @@ class Alumno extends Conexion
 
         return 'Dato borrado';
     }
+
     /**
-     * Actualiza la informacion de un alumno.
+     * Actualiza los datos del profesor.
      *
-     * Este metodo recibe los datos del alumno que seran actualizados, incluyendo su * id para ubicar al alumno que se actualizara.
+     * Este metodo actualiza el nombre y apellido del profesor
+     * de acuerdo al id seleccionado.
      *
      * @access public
      * @param string $sNombreActualizar
@@ -77,7 +81,7 @@ class Alumno extends Conexion
         $oConexion = new Conexion;
         $db = $oConexion->Conectar();
         $consulta = $db
-            ->prepare("UPDATE alumnos SET sNombre = ?, sApellido=? WHERE nIdAlumno = ?");
+            ->prepare("UPDATE profesores SET sNombre = ?, sApellido=? WHERE nIdProfesor = ?");
         $consulta->bind_param("ssi", $sNombreSet, $sApellidoSet, $nIdCondicion);
 
         $sNombreSet = $sNombreActualizar;
@@ -92,9 +96,10 @@ class Alumno extends Conexion
     }
 
     /**
-     * Obtiene los datos de un alumno.
+     * Obtiene los datos de un registro.
      *
-     * Este metodo obtiene el id, nombre y apellidos de un alumno de acuerdo a su id.
+     * Este metodo obtiene los datos de un profesor
+     * de acuerdo al id seleccionado.
      *
      * @access public
      * @param int $nIdSeleccionado
@@ -105,7 +110,7 @@ class Alumno extends Conexion
         $oConexion = new Conexion();
         $db = $oConexion->Conectar();
         $consulta = $db
-            ->prepare("SELECT * FROM alumnos WHERE nIdAlumno = ?");
+            ->prepare("SELECT * FROM profesores WHERE nIdProfesor = ?");
 
         $consulta->bind_param("i", $nIdCondicion);
 
@@ -126,9 +131,10 @@ class Alumno extends Conexion
     }
 
     /**
-     * Obtiene todos los registros de alumnos.
+     * Obtiene todos los registros de profesores.
      *
-     * Este metodo obtiene todos los registros de la tabla de alumnos, con ayuda de * un metodo de la clase conexion.
+     * Este metodo obtiene todos los datos de profesores
+     * de toda la tabla.
      *
      * @access public
      * @return array
@@ -136,7 +142,7 @@ class Alumno extends Conexion
     public function TodosRegistros()
     {
         $oConexion = new Conexion;
-        $aDatosRegistros = $oConexion->ConsultaTodo("SELECT * FROM alumnos");
+        $aDatosRegistros = $oConexion->ConsultaTodo("SELECT * FROM profesores");
         return $aDatosRegistros;
     }
 }

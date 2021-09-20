@@ -1,12 +1,11 @@
-/*
-TODO: crear stored procedures 
-*/
-$(function(){
+const funciones = (controlador) => {
+    console.log('El controlador es '+controlador)
+
 
   const todosDatos = () => {
       $.ajax({
           type: 'post',
-          url: '/controllers/alumnoController.php',
+          url: '/controllers/'+controlador+'Controller.php',
           data: {accion:'todo'}
        }).done(function(respuesta){
           let pJson = JSON.parse(respuesta)
@@ -26,7 +25,7 @@ $(function(){
       })
   }
   /* Mostrar datos de la tabla*/
-  (todosDatos)()
+  todosDatos()
 
   /* Contenedores */
   const form = document.querySelector('#formulario')
@@ -103,12 +102,12 @@ $(function(){
 
       $.ajax({
           type: 'post',
-          url: '/controllers/alumnoController.php',
+          url: '/controllers/'+controlador+'Controller.php',
           data:{accion:'insertar',nombre:nombre,apellido:apellido},
       }).done(function(respuesta){
           let pJson = JSON.parse(respuesta)
 
-					limpiarCampos()
+                    limpiarCampos()
 
           $('#msndatos').append(
           '<div id="contenedormsn" class="alert alert-success d-flex justify-content-center align-items-center w-75 mb-0">'+
@@ -116,7 +115,7 @@ $(function(){
           '</div>'
           )
 
-					btnenviar.classList.add('disabled')
+                    btnenviar.classList.add('disabled')
       })
       todosDatos()
   }
@@ -126,12 +125,12 @@ $(function(){
       let id = parseInt(n)
       $.ajax({
           type: 'post',
-          url: '/controllers/alumnoController.php',
+          url: '/controllers/'+controlador+'Controller.php',
           data:{accion:'eliminar',id:id},
       }).done(function(respuesta){
           let pJson = JSON.parse(respuesta)
 
-					limpiarCampos()
+                    limpiarCampos()
 
           $('#msndatos').append(
           '<div id="contenedormsn" class="alert alert-success d-flex justify-content-center align-items-center w-75 mb-0">'+
@@ -146,7 +145,7 @@ $(function(){
       let id = parseInt(n)
       $.ajax({
           type: 'post',
-          url: '/controllers/alumnoController.php',
+          url: '/controllers/'+controlador+'Controller.php',
           data:{accion:'seleccionar',id:id},
       }).done(function(respuesta){
           let pJson = JSON.parse(respuesta)
@@ -174,7 +173,7 @@ $(function(){
 
       $.ajax({
         type: 'post',
-        url: '/controllers/alumnoController.php',
+        url: '/controllers/'+controlador+'Controller.php',
         data:{accion:'actualizar',id:id,nombre:nombre,apellido:apellido},
       }).done(function(respuesta){
         let pJson = JSON.parse(respuesta)
@@ -186,7 +185,7 @@ $(function(){
         '<p class="mb-0"> <strong>'+ pJson['mensaje'] +'</strong></p>'+
         '</div>'
         )
-				btnactualizar.classList.add('disabled')
+                btnactualizar.classList.add('disabled')
       })
       todosDatos()
   }
@@ -201,5 +200,4 @@ $(function(){
         $('#msndatos').empty()
 
   }
-
-})//document.ready
+}
