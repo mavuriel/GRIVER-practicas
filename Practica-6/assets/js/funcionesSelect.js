@@ -97,20 +97,55 @@ const peticionMaterias = () => {
   })
 }
 
+const peticionAlumnos = () => {
+  //Peticion de alumnos
+  $.ajax({
+    type: 'post',
+    url: '/controllers/alumnoController.php',
+    data: {accion:'todo'}
+  }).done(function(respuesta){
+    let pJson = JSON.parse(respuesta)
+    $('#selectuno').empty()
+    pJson.forEach( e => {
+      $('#selectuno').append(
+        '<option value="'+e[0]+'">'+e[1]+' '+ e[2] +'</option>'
+      )
+    })
+  })
+}
+
+const peticionClase = () => {
+  //Peticion de clase
+  $.ajax({
+    type: 'post',
+    url: '/controllers/claseController.php',
+    data: {accion:'todo'}
+  }).done(function(respuesta){
+    let pJson = JSON.parse(respuesta)
+    $('#selectdos').empty()
+    pJson.forEach( e => {
+      $('#selectdos').append(
+        '<option value="'+e[0]+'"> Profesor: '+e[1]+' Materia: '+ e[2] +'</option>'
+      )
+    })
+  })
+}
+
 /* Datos select */
 
 if(controlador === 'clase'){
   peticionProfesores()
   peticionMaterias()
 }else{
-
+  peticionAlumnos()
+  peticionClase()
 }
 
 const insertar = () => {
 
   let primerdato = selectUno.value
   let segundodato = selectDos.value
-  let tercerdato = selectTres.value
+  let tercerdato = controlador==='clase' ? selectTres.value : ''
 
   //Insertar datos
   $.ajax({
@@ -150,12 +185,20 @@ const seleccionar = (n) =>{
       btnenviar.classList.add('disabled')
       btnactualizar.classList.remove('disabled')
       btncancelar.classList.remove('disabled')
-
-      $('#idinput').val(pJson[0])
-      $('#valoruno').append(pJson[0])
-      $('#valordos').append(pJson[1])
-      $('#valortres').append(pJson[2])
-      $('#valorcuatro').append(pJson[3])
+      
+      if (controlador === 'clase'){
+        $('#idinput').val(pJson[0])
+        $('#valoruno').append(pJson[0])
+        $('#valordos').append(pJson[1])
+        $('#valortres').append(pJson[2])
+        $('#valorcuatro').append(pJson[3])
+      }else{
+        $('#idinput').val(pJson[0])
+        $('#valoruno').append(pJson[0])
+        $('#valordos').append(pJson[3])
+        $('#valortres').append(pJson[2])
+        $('#valorcuatro').append(pJson[1])
+      }
 
   })
   todosDatos()
@@ -165,7 +208,7 @@ const actualizar = () => {
   let id = $('#idinput').val()
   let primerDato = selectUno.value
   let segundoDato = selectDos.value
-  let tercerDato = selectTres.value
+  let tercerDato = controlador==='clase' ? selectTres.value : ''
 
   $.ajax({
     type: 'post',
@@ -207,7 +250,7 @@ const eliminar = (n) =>{
       let pJson = JSON.parse(respuesta)
 
       hideP()
-      
+      $('#msndatos').empty()
       $('#msndatos').append(
       '<div id="contenedormsn" class="alert alert-success d-flex justify-content-center align-items-center w-75 mb-0">'+
       '<p class="mb-0"> <strong>'+ pJson['mensaje'] +'</strong></p>'+

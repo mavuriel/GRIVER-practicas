@@ -29,7 +29,7 @@
           <a class="nav-link" href="./clases.php">Clases</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link disabled" href="#">Inscripciones</a>
+          <a class="nav-link" href="./inscripciones.php">Inscripciones</a>
         </li>
       </ul>
     </nav>
