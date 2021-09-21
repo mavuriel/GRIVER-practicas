@@ -32,19 +32,19 @@ function ValidaDatos($aCamposEvaluar)
     return $aMensajes;
 }
 
-/*
-Validar correo electronico
+function ValidaNumeros($aCamposEvaluar)
+{
+    $aMensajes = [];
 
-if (!filter_var($_POST['sEmail'], FILTER_VALIDATE_EMAIL)) {
-$aMensajes[] = "No es un <strong>formato valido</strong> de correo electronico, modificalo.";
-}
+    foreach ($aCamposEvaluar as $key => $value) {
+        $sVariableEvaluada = trim($aCamposEvaluar["$key"]);
+        if (empty($sVariableEvaluada)) {
+            $aMensajes[] = "Campo<strong> $key vacio</strong>, es requerido.";
+        }
+        if (preg_match('/[0-9]+/', $aCamposEvaluar["$key"]) != 1) {
+            $aMensajes[] = "Revisa el <strong>formato</strong> e ingresa <strong>unicamente letras</strong> para $key.";
+        }
+    }
 
-Verificar si el servidor recibio una solicitud POST
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-echo '<br>';
-$aMensajesError = ValidaDatos();
-foreach ($aMensajesError as $error) {
-$aErrores[] = $error;
+    return $aMensajes;
 }
-}
- */

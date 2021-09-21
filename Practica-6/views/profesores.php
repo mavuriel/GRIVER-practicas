@@ -63,7 +63,7 @@
 
 <script src="../assets/js/jquery-3.6.0.min.js"></script>
 <script src="../assets/js/validacion.js"></script>
-<script src="../assets/js/funciones.js"></script>
+<script src="../assets/js/funcionesInput.js"></script>
 
 <script>
 $(function(){

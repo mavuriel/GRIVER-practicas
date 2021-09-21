@@ -26,7 +26,7 @@
           <a class="nav-link" href="./materias.php">Materias</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link disabled" href="#">Clases</a>
+          <a class="nav-link" href="./clases.php">Clases</a>
         </li>
         <li class="nav-item">
           <a class="nav-link disabled" href="#">Inscripciones</a>
